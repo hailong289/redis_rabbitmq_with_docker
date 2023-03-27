@@ -1,0 +1,43 @@
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    hostname: redis
+    networks: 
+      - redis
+    ports:
+      - 6379:6379/tcp
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
+    volumes:
+      - redis-data:/data
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+      # - HTTP_USER=root
+      # - HTTP_PASSWORD=qwerty
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    networks: 
+      - redis
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+volumes:
+  redis-data:
+
+networks:
+  redis:
