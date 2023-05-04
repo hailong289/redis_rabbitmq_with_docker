@@ -36,8 +36,11 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq
 volumes:
   redis-data:
 
 networks:
   redis:
+  rabbitmq:
